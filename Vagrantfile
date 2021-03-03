@@ -34,6 +34,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     echo Hello, World
   SHELL
+  config.vm.provision "shell", :path => "provision/local/scripts/docker-init.sh"
   # config.vm.provision "shell", inline: <<-SHELL
   #   /home/init.sh
   # SHELL

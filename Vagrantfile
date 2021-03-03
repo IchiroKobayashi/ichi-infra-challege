@@ -31,10 +31,11 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/cwd/src", id: "home", type: "nfs", :nfs => true, :mount_options => ['nolock,vers=3,udp,actimeo=2']
 
   # VM provisioning
-  config.vm.provision "shell", inline: <<-SHELL
+  config.vm.provision "shell", run: "always", inline: <<-SHELL
     echo Hello, World
   SHELL
-  config.vm.provision "shell", :path => "provision/local/scripts/docker-init.sh"
+
+  config.vm.provision "shell", run: "always", :path => "provision/local/scripts/docker-init.sh"
   # config.vm.provision "shell", inline: <<-SHELL
   #   /home/init.sh
   # SHELL

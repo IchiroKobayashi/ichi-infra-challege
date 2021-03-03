@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_version = "2004.01"
   # config.vm.box_url = "https://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box"
   config.vm.hostname = "vagrant-test.localhost.com"
-  config.vm.network :forwarded_port, guest: 5000, host: 8080, id: "http", protocol: "tcp"
+  config.vm.network :forwarded_port, guest: 8080, host: 8080, id: "http", protocol: "tcp"
   config.vm.network :private_network, ip: "192.168.10.10"
   config.vm.provider :virtualbox do |v|
       v.name = "centos7_vagrant_test"

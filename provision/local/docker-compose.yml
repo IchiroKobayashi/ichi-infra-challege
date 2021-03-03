@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  web:
+    image: nginx
+    # build: ./docker
+    ports:
+      - 8080:80
+    volumes:
+      - ${WEB_DIR}:${DOCKER_WEB_DIR}
+    working_dir: ${DOCKER_WEB_DIR}
+    environment:
+      - NGINX_PORT
+    depends_on:
+      - db
+    # restart: always
+    container_name: web
+
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ${DB_DIR}/conf:/etc/mysql/conf.d
+      - ${DB_DATA_DIR}:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+    restart: always
+    container_name: db

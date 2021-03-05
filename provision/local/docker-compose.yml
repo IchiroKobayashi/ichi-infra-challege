@@ -3,30 +3,45 @@ version: "3.8"
 services:
   web:
     image: nginx
-    # build: ./docker
+    # build: ./local/docker
+    container_name: web
     ports:
       - 8080:80
     volumes:
       - ${WEB_DIR}:${DOCKER_WEB_DIR}
     working_dir: ${DOCKER_WEB_DIR}
     environment:
-      - NGINX_PORT
-    depends_on:
-      - db
+      - ${USER_NAME}
+      - ${USER_ID}
+      # - ${GROUP_NAME}
+      # - ${GROUP_ID}
+    # depends_on:
+      # - db
     # restart: always
-    container_name: web
+    user: $USER_ID:$GROUP_ID
+    stdin_open: true
+    tty: true
+    privileged: true
+    command: tail -f /dev/null
 
-  db:
-    image: mysql
-    ports:
-      - 3306:3306
-    volumes:
-      - ${DB_DIR}/conf:/etc/mysql/conf.d
-      - ${DB_DATA_DIR}:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-    restart: always
-    container_name: db
+  # db:
+  #   image: mysql
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - ${DB_DIR}/conf:/etc/mysql/conf.d
+  #     - ${DB_DATA_DIR}:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD
+  #     - MYSQL_DATABASE
+  #     - MYSQL_USER
+  #     - MYSQL_PASSWORD
+  #     - UID
+  #     - UNAME
+  #     - GID
+  #     - GNAME
+  #   restart: always
+  #   container_name: db
+  #   user: $UID:$GID
+  #   tty: true
+

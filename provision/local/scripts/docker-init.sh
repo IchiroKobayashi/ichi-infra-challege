@@ -53,9 +53,14 @@ echo "Change Owner & Mode for the Docker Compose"
 sudo chown root:root ${LAST_OUTPUT}/docker-compose
 sudo chmod +x ${LAST_OUTPUT}/docker-compose
 
+# Start Docker
+echo "Start Docker"
+sudo systemctl start docker
+sudo systemctl status docker
+
 # Run containers using docker-compose
 echo "[$(date)] Executing startup script..."
 cd /home/cwd/src/provision/local
-docker-compose up -d --remove-orphans
+sudo ${LAST_OUTPUT}/docker-compose up -d --remove-orphans
 
 sleep 10

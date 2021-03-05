@@ -14,6 +14,8 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
   config.vm.box = "centos/7"
   config.vm.box_version = "2004.01"
+  # config.vm.box = "hashicorp/bionic64"
+  # config.vm.box_version = "1.0.282"
   # config.vm.box_url = "https://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-2004_01.VirtualBox.box"
   config.vm.hostname = "vagrant-test.localhost.com"
   config.vm.network :forwarded_port, guest: 8080, host: 8080, id: "http", protocol: "tcp"
@@ -27,8 +29,14 @@ Vagrant.configure("2") do |config|
       v.gui                   = false
   end
 
+  # Avoid plugin conflicts
+  if Vagrant.has_plugin?("vagrant-vbguest") then
+    config.vbguest.auto_update = false
+  end
+
   # VM NFS
-  config.vm.synced_folder ".", "/home/cwd/src", id: "home", type: "nfs", :nfs => true, :mount_options => ['nolock,vers=3,udp,actimeo=2']
+  # Disable default sharing setting
+  config.vm.synced_folder ".", "/home/cwd/src/", id: "home", :nfs => true, :mount_options => ['nolock,vers=3,udp,actimeo=2']
 
   # VM provisioning
   config.vm.provision "shell", run: "always", inline: <<-SHELL
@@ -42,11 +50,5 @@ Vagrant.configure("2") do |config|
   # $DOCKER_COMPOSE_VERSION="1.28.2"
   # config.vm.provision "shell", :path => "home/docker.sh", :args => [$DOCKER_COMPOSE_VERSION]
   # config.ssh.forward_agent = true
-
-
-  # Avoid plugin conflicts
-  if Vagrant.has_plugin?("vagrant-vbguest") then
-    config.vbguest.auto_update = false
-  end
 
 end

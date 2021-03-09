@@ -5,8 +5,8 @@
 echo "[$(date)] Provisioning virtual machine..."
 
 # Directory Definition
-FIRST_OUTPUT='~/docker-compose'
-LAST_OUTPUT='/usr/local/bin'
+FIRST_OUTPUT=~/docker-compose
+LAST_OUTPUT=/usr/local/bin/
 
 # Install jq command if necessary
 jq --version >/dev/null 2>&1
@@ -23,8 +23,8 @@ fi
 
 # Download the latest Docker
 echo "Download the latest Docker"
-DOCKER_LATEST_VERSION=$(curl -L https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
-echo "Downloading docker v${DOCKER_LATEST_VERSION}..."
+# DOCKER_LATEST_VERSION=$(curl -L https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+echo "Downloading docker latest..."
 echo "This may take a few minutes..."
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 wait
@@ -38,10 +38,11 @@ echo "Download the latest docker compose"
 DOCKER_COMPOSE_LATEST_VERSION=$(curl -L https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
 echo "Downloading docker-compose v${DOCKER_COMPOSE_LATEST_VERSION}..."
 echo "This may take a few minutes..."
-wget -q "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_LATEST_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -O $FIRST_OUTPUT
-RESULT="$?"
-[ "$RESULT" -ne "0" ] && echo "Failed to download docker-compose." 1>&2 && exit "$RESULT"
-echo "Dowload completed　$(docker-compose --version)"
+wget "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_LATEST_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -O ~/docker-compose
+wait
+# RESULT="$?"
+# [ "$RESULT" -ne "0" ] && echo "Failed to download docker-compose." 1>&2 && exit "$RESULT"
+# echo "Dowload completed　$(sudo ${LAST_OUTPUT}/docker-compose --version)"
 
 # Make a directory & Move the installed docker-compose to the appropriate folder
 echo "Make a directory & Move the installed docker-compose to the appropriate folder"

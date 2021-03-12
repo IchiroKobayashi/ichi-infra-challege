@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: ichi-infra-challenge:nginx-20210312
+    # command: 
+    build: 
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./web/env/nginx:/etc/nginx/conf.d
+      - ./web/src:/var/www/html
+    depends_on:
+      - api
+    logging:
+      driver: "none"
+    restart: always
+    networks:
+      - services
+
+  api:
+    image: golang:1.14.7-alpine3.12
+    command: go run main.go --host 0.0.0.0 --port 8080
+    container_name: api
+    ports:
+      - 8080:8080
+    volumes:
+      - ./api:/go/src/github.com/ichi-infra-challenge/api
+      - /Users/ichiro/go:/go
+    working_dir: /go/src/github.com/ichi-infra-challenge/api/src
+    environment:
+      - APP_STAGE=local
+      - LOG_LEVEL=debug
+      - MYSQL_CONNECTION
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - services
+
+  db:
+    image: mysql:5.7
+    # build: ./docker/mysql
+    container_name: db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db/db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+    healthcheck:
+      test: ["CMD-SHELL", "mysqlshow -u ${MYSQL_USER} -p${MYSQL_PASSWORD}"]
+      interval: "5s"
+      retries: 10
+    logging:
+      driver: "none"
+    restart: always
+    networks:
+      - services
+    
+networks:
+  services:
+    external:
+      name: local_infra_challenge_networks

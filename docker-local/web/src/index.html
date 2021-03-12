@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" charset="utf-8">
+</head>
+
+<body>
+
+  <label>検索ワード <input id=searchTerm type="text" name="検索ワード" size="40" onchange='inputQuery()'></label><br>
+  <a id=example href="http://localhost:8080/search?search=" target="_blank">検索</a><br>
+  <a id=create href="http://localhost:8080/create?search=" target="_blank">データ作成</a><br>
+  <script type="text/javascript">
+    var exampleDefault = document.getElementById("example").href
+    var createDefault = document.getElementById("create").href
+    function inputQuery() {
+      document.getElementById("example").href = exampleDefault + document.getElementById("searchTerm").value
+      document.getElementById("create").href = createDefault + document.getElementById("searchTerm").value
+    }
+  </script>
+</body>
+
+</html>

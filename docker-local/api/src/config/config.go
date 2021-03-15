@@ -23,7 +23,7 @@ type config struct { // nolint:maligned
 	AppStage        string `env:"APP_STAGE" envDefault:"local"`
 	LogLevel        string `env:"LOG_LEVEL" envDefault:"warn"`
 	TimeZone        string `env:"TIME_ZONE" envDefault:"UTC"`
-	MySQLConnection string `env:"MYSQL_CONNECTION" envDefault:"local:local@tcp(127.0.0.1:3306)/infra-challenge?charset=utf8&parseTime=true"`
+	MySQLConnection string `env:"MYSQL_CONNECTION" envDefault:"local:local@tcp(db:3306)/infra-challenge?charset=utf8&parseTime=true"`
 }
 
 func init() {

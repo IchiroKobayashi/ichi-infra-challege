@@ -17,3 +17,4 @@ docker-local/db/db-data/ib_buffer_pool
 docker-local/db/db-data/ibdata1
 *.TRG
 docker-local/api/src/src
+docker-local/db/db-data/ibtmp1

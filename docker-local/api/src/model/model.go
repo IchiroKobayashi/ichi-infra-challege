@@ -20,7 +20,7 @@ type User struct {
 // Create ユーザー情報のテーブル情報
 func Create(name string) (sql.Result, error) {
 	// db, err := sql.Open("mysql", config.MySQLConnection)
-	db, err := sql.Open("mysql", "local:local@tcp(127.0.0.1:3306)/infra-challenge?charset=utf8&parseTime=true")
+	db, err := sql.Open("mysql", "local:local@tcp(db:3306)/infra-challenge?charset=utf8&parseTime=true")
 
 	fmt.Println(err)
 	fmt.Println(db)
@@ -94,7 +94,7 @@ func sqlConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "local"
 	PASS := "local"
-	PROTOCOL := "tcp(127.0.0.1:3306)"
+	PROTOCOL := "tcp(db:3306)"
 	DBNAME := "infra-challenge"
 
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"

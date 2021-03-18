@@ -58,7 +58,7 @@ func createData(c *gin.Context) {
 
 func morphologicalAnalyze(c *gin.Context) {
 
-	text := c.PostForm("search")
+	text := c.PostForm("text")
 	// mecab here
 	mecab, err := mecab.New("-Owakati")
 	if err != nil {
@@ -77,10 +77,10 @@ func morphologicalAnalyze(c *gin.Context) {
 	// 	entry2[node.Surface()] = node.Feature()
 	// 	cData.append(cData, entry2)
 	// }
-
-	c.HTML(200, "index.html", gin.H{
-		"data": data,
-	})
+	c.IndentedJSON(http.StatusOK, data)
+	//c.HTML(200, "index.html", gin.H{
+	//	"data": data,
+	//})
 }
 
 func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
@@ -103,6 +103,7 @@ func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
 	for {
 		entry := make(map[string]interface{})
 		fmt.Printf("%s\t%s\n", node.Surface(), node.Feature())
+		entry[node.Surface()] = node.Feature()
 		data = append(data, entry)
 		// features := strings.Split(node.Feature(), ",")
 		// if features[0] != "助詞" && features[0] != "助動詞" {
@@ -113,5 +114,6 @@ func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
 			break
 		}
 	}
+	fmt.Println(data)
 	return data
 }

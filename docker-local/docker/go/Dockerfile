@@ -11,31 +11,31 @@ ENV ipadic_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlS
 
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache build-base curl git g++ bash file openssl openssh-client sudo \
+    apk add --no-cache build-base curl git g++ bash file openssl openssh-client sudo && \
     # Install MeCab
-    && curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${mecab_url} \
-    && tar zxf mecab-${MECAB_VERSION}.tar.gz \
-    && cd mecab-${MECAB_VERSION} \
-    && ./configure --enable-utf8-only --with-charset=utf8 \
-    && make \
-    && make install \
-    && cd \
+    curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${mecab_url} && \
+    tar zxf mecab-${MECAB_VERSION}.tar.gz && \
+    cd mecab-${MECAB_VERSION} && \
+    ./configure --enable-utf8-only --with-charset=utf8 && \
+    make && \
+    make install && \
+    cd && \
     # Install IPA dic
-    && curl -SL -o mecab-ipadic-${IPADIC_VERSION}.tar.gz ${ipadic_url} \
-    && tar zxf mecab-ipadic-${IPADIC_VERSION}.tar.gz \
-    && cd mecab-ipadic-${IPADIC_VERSION} \
-    && ./configure --with-charset=utf8 \
+    curl -SL -o mecab-ipadic-${IPADIC_VERSION}.tar.gz ${ipadic_url} && \
+    tar zxf mecab-ipadic-${IPADIC_VERSION}.tar.gz && \
+    cd mecab-ipadic-${IPADIC_VERSION} && \
+    ./configure --with-charset=utf8 && \
     # compile
-    && make \
+    make && \
     # install
-    && make install \
-    && cd \
+    make install && \
+    cd && \
     # Install Neologd
-    && git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git /mecab-ipadic-neologd \
-    && /mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -a -y -p /usr/local/lib/mecab/dic/mecab-ipadic-neologd \
-    && echo "dicdir = /usr/local/lib/mecab/dic/mecab-ipadic-neologd" > /usr/local/etc/mecabrc \
+    git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git /mecab-ipadic-neologd && \
+    /mecab-ipadic-neologd/bin/install-mecab-ipadic-neologd -n -a -y -p /usr/local/lib/mecab/dic/mecab-ipadic-neologd && \
+    echo "dicdir = /usr/local/lib/mecab/dic/mecab-ipadic-neologd" > /usr/local/etc/mecabrc && \
     # Clean up
-    && rm -rf \
+    rm -rf \
       mecab-${MECAB_VERSION}* \
       mecab-${IPADIC_VERSION}* \
       /mecab-ipadic-neologd

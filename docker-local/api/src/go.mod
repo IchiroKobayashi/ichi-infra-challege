@@ -11,6 +11,7 @@ require (
 	github.com/go-openapi/swag v0.19.14
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/jinzhu/gorm v1.9.12
+	github.com/neologd/mecab-ipadic-neologd v0.0.7 // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1
 	github.com/unknwon/i18n v0.0.0-20200823051745-09abd91c7f2c

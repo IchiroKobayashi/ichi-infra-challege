@@ -22,23 +22,23 @@ services:
       - services
 
   api:
-    image: golang:1.14.7-alpine3.12
-    command: >
-      go run main.go --host 0.0.0.0 --port 8080
+    image: ichi-infra-challenge:golang-1.15.10-alpine3.12
+    build:
+      context: ./docker/go
+      dockerfile: Dockerfile
+#    command: >
+#      go run main.go --host 0.0.0.0 --port 8080
     container_name: api
     ports:
       - 8080:8080
     volumes:
       - ./api:/go/src/github.com/ichi-infra-challenge/api
       - /Users/ichiro/go:/go
-      - /usr/local/Cellar/mecab/:/mecab
     working_dir: /go/src/github.com/ichi-infra-challenge/api/src
     environment:
       - APP_STAGE=local
       - LOG_LEVEL=debug
       - MYSQL_CONNECTION
-      - CGO_LDFLAGS=-L/mecab/0.996/lib -lmecab -lstdc++
-      - CGO_CFLAGS=-I/mecab/0.996/include
     depends_on:
       - db
     restart: always

@@ -13,7 +13,9 @@
             "env": {
                 "PORT":8080,
                 "LOG_LEVEL":"debug",
-                "JwtExpiration":60
+                "JwtExpiration":60,
+                "CGO_LDFLAGS":"-L/usr/local/Cellar/mecab/0.996/lib -lmecab -lstdc++",
+                "CGO_CFLAGS":"-I/usr/local/Cellar/mecab/0.996/include"
             },
             // "args": []
         }

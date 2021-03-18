@@ -2,7 +2,7 @@
 package misc
 
 import (
-	"github.com/supinf/elasticsearch-example/api/src/i18n"
+	"github.com/ichi-infra-challenge/docker-local/api/src/i18n"
 )
 
 // ---------------------------------------------------------------------

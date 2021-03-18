@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/ichi-infra-challenge/docker-local/api/src/config"
 	"github.com/sirupsen/logrus"
-	"github.com/supinf/elasticsearch-example/api/src/config"
 )
 
 // Map マップエイリアス

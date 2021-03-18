@@ -10,6 +10,19 @@
   <label>検索ワード <input id=searchTerm type="text" name="検索ワード" size="40" onchange='inputQuery()'></label><br>
   <a id=example href="http://localhost:8080/search?search=" target="_blank">検索</a><br>
   <a id=create href="http://localhost:8080/create?search=" target="_blank">データ作成</a><br>
+
+  <form method="post" action="http://localhost:8080/analyze">
+    <p>テキスト<textarea name="text" size="30" placeholder="テキスト記入"></textarea></p>
+    <p><input type="submit" value="analize"></p>
+  </form>
+
+  <ul>
+    {{ range .data }}
+    <li>ID：{{.ID}}</li>
+    <li>名前：{{.Name}}</li>
+    {{ end }}
+  </ul>
+
   <script type="text/javascript">
     var exampleDefault = document.getElementById("example").href
     var createDefault = document.getElementById("create").href

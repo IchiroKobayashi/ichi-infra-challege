@@ -6,7 +6,7 @@ import (
 	cryptoRand "crypto/rand"
 	"encoding/base64"
 
-	"github.com/supinf/elasticsearch-example/api/src/logs"
+	"github.com/ichi-infra-challenge/docker-local/api/src/logs"
 )
 
 //EncryptByGCM encrypt using GCM algorithm

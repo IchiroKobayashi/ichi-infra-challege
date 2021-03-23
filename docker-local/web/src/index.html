@@ -11,17 +11,22 @@
   <a id=example href="http://localhost:8080/search?search=" target="_blank">検索</a><br>
   <a id=create href="http://localhost:8080/create?search=" target="_blank">データ作成</a><br>
 
-  <form method="post" action="http://localhost:8080/analyze">
+  <form method="get" action="http://localhost:8080/analyze">
     <p>テキスト<textarea name="text" size="30" placeholder="テキスト記入"></textarea></p>
     <p><input type="submit" value="analyze"></p>
   </form>
 
-  <ul>
-    {{ range .data }}
-    <li>ID：{{.ID}}</li>
-    <li>名前：{{.Name}}</li>
-    {{ end }}
-  </ul>
+  <form method="get" action="http://localhost:8080/scrape">
+    <p>URL<textarea name="url" size="30" placeholder="URL記入"></textarea></p>
+    <p><input type="submit" value="scrape"></p>
+  </form>
+
+<!--  <ul>-->
+<!--    {{ range .data }}-->
+<!--    <li>ID：{{.ID}}</li>-->
+<!--    <li>名前：{{.Name}}</li>-->
+<!--    {{ end }}-->
+<!--  </ul>-->
 
   <script type="text/javascript">
     var exampleDefault = document.getElementById("example").href

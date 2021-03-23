@@ -6,14 +6,14 @@ ENV LC_ALL ja_JP.UTF-8
 ENV TZ JST-9
 ENV MECAB_VERSION 0.996
 ENV IPADIC_VERSION 2.7.0-20070801
-ENV mecab_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE
-ENV ipadic_url https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM
+ENV MECAB_URL https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE
+ENV IPADIC_URL https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM
 
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache build-base curl git g++ bash file openssl openssh-client sudo && \
     # Install MeCab
-    curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${mecab_url} && \
+    curl -SL -o mecab-${MECAB_VERSION}.tar.gz ${MECAB_URL} && \
     tar zxf mecab-${MECAB_VERSION}.tar.gz && \
     cd mecab-${MECAB_VERSION} && \
     ./configure --enable-utf8-only --with-charset=utf8 && \
@@ -21,7 +21,7 @@ RUN apk update && \
     make install && \
     cd && \
     # Install IPA dic
-    curl -SL -o mecab-ipadic-${IPADIC_VERSION}.tar.gz ${ipadic_url} && \
+    curl -SL -o mecab-ipadic-${IPADIC_VERSION}.tar.gz ${IPADIC_URL} && \
     tar zxf mecab-ipadic-${IPADIC_VERSION}.tar.gz && \
     cd mecab-ipadic-${IPADIC_VERSION} && \
     ./configure --with-charset=utf8 && \

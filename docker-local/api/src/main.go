@@ -1,16 +1,19 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"golang.org/x/net/html/charset"
+	"io/ioutil"
 	"log"
 	"net/http"
 
-	// #cgo LDFLAGS: -L/usr/local/Cellar/mecab/0.996/lib -lmecab -lstdc++
-	// #cgo CFLAGS: -I/usr/local/Cellar/mecab/0.996/include
+	"github.com/PuerkitoBio/goquery"
 	mecab "github.com/bluele/mecab-golang"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ichi-infra-challenge/docker-local/api/src/model"
+	"github.com/saintfish/chardet"
 )
 
 const (
@@ -22,7 +25,8 @@ func main() {
 	r := gin.Default()
 	r.GET("/search", searchExample)
 	r.GET("/create", createData)
-	r.POST("/analyze", morphologicalAnalyze)
+	r.GET("/analyze", morphologicalAnalyze)
+	r.GET("/scrape", scrapeText)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
@@ -58,7 +62,7 @@ func createData(c *gin.Context) {
 
 func morphologicalAnalyze(c *gin.Context) {
 
-	text := c.PostForm("text")
+	text := c.Query("text")
 	// mecab here
 	mecab, err := mecab.New("-Owakati")
 	if err != nil {
@@ -116,4 +120,35 @@ func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
 	}
 	fmt.Println(data)
 	return data
+}
+
+func scrapeText(c *gin.Context) {
+	url := c.Query("url")
+
+	// Getリクエスト
+	res, _ := http.Get(url)
+	defer res.Body.Close()
+
+	// 読み取り
+	buffer, _ := ioutil.ReadAll(res.Body)
+
+	// 文字コード判定
+	detector := chardet.NewTextDetector()
+	detectResult, _ := detector.DetectBest(buffer)
+	fmt.Println(detectResult.Charset)
+
+	// 文字コード変換
+	bufferReader := bytes.NewReader(buffer)
+	reader, _ := charset.NewReaderLabel(detectResult.Charset, bufferReader)
+
+	// HTMLパース
+	document, _ := goquery.NewDocumentFromReader(reader)
+	fmt.Println(document)
+
+	// titleを抜き出し
+	result := document.Find("title").Text()
+	fmt.Println(result)
+
+	// Response: JSON
+	c.IndentedJSON(http.StatusOK, result)
 }

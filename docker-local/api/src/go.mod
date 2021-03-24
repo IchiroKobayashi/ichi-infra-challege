@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.3.0
 	github.com/bluele/mecab-golang v0.0.0-20180831023624-c8cfe04e87f9
 	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-openapi/strfmt v0.20.0
 	github.com/go-openapi/swag v0.19.14

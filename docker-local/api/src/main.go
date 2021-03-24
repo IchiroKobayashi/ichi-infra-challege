@@ -7,9 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	mecab "github.com/bluele/mecab-golang"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/ichi-infra-challenge/docker-local/api/src/model"
@@ -23,6 +27,40 @@ const (
 func main() {
 	// Start HTTP server
 	r := gin.Default()
+
+	// ここからCorsの設定
+	r.Use(cors.New(cors.Config{
+		// アクセスを許可したいアクセス元
+		AllowOrigins: []string{
+			"http://localhost",
+			"http://localhost/",
+			"*",
+		},
+		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"OPTIONS",
+		},
+		// 許可したいHTTPリクエストヘッダ
+		AllowHeaders: []string{
+			"Access-Control-Allow-Credentials",
+			"Access-Control-Allow-Headers",
+			"Access-Control-Allow-Origin",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"Authorization",
+			"Origin",
+			"Authorization",
+			"Accept",
+		},
+		// cookieなどの情報を必要とするかどうか
+		AllowCredentials: false,
+		// preflightリクエストの結果をキャッシュする時間
+		MaxAge: 24 * time.Hour,
+	}))
+
 	r.GET("/search", searchExample)
 	r.GET("/create", createData)
 	r.GET("/analyze", morphologicalAnalyze)
@@ -123,32 +161,53 @@ func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
 }
 
 func scrapeText(c *gin.Context) {
-	url := c.Query("url")
+	var urls []string
+	urls = strings.Split(c.Query("urls"), ",")
 
-	// Getリクエスト
-	res, _ := http.Get(url)
-	defer res.Body.Close()
+	fmt.Println(urls)
+	//syncでURLの数だけ待ち合わせ
+	var wg sync.WaitGroup
+	wg.Add(len(urls))
 
-	// 読み取り
-	buffer, _ := ioutil.ReadAll(res.Body)
+	//titlesを返すresult
+	var result []interface{}
 
-	// 文字コード判定
-	detector := chardet.NewTextDetector()
-	detectResult, _ := detector.DetectBest(buffer)
-	fmt.Println(detectResult.Charset)
+	//titleをfetchする関数定義
+	fetchTitle := func(url string) {
+		defer wg.Done()
+		// Getリクエスト
+		res, _ := http.Get(url)
+		defer res.Body.Close()
 
-	// 文字コード変換
-	bufferReader := bytes.NewReader(buffer)
-	reader, _ := charset.NewReaderLabel(detectResult.Charset, bufferReader)
+		// 読み取り
+		buffer, _ := ioutil.ReadAll(res.Body)
 
-	// HTMLパース
-	document, _ := goquery.NewDocumentFromReader(reader)
-	fmt.Println(document)
+		// 文字コード判定
+		detector := chardet.NewTextDetector()
+		detectResult, _ := detector.DetectBest(buffer)
+		fmt.Println(detectResult.Charset)
 
-	// titleを抜き出し
-	result := document.Find("title").Text()
-	fmt.Println(result)
+		// 文字コード変換
+		bufferReader := bytes.NewReader(buffer)
+		reader, _ := charset.NewReaderLabel(detectResult.Charset, bufferReader)
 
-	// Response: JSON
-	c.IndentedJSON(http.StatusOK, result)
+		// HTMLパース
+		document, _ := goquery.NewDocumentFromReader(reader)
+
+		// titleを抜き出し
+		title := document.Find("title").Text()
+		result = append(result, title)
+		fmt.Println(result)
+	}
+
+	//urlsの回数分スレッド実行
+	for _, url := range urls {
+		go fetchTitle(url)
+	}
+
+	//fetchTitle goroutineが終わるまで、wg.Wait()で待つ
+	wg.Wait()
+
+	c.JSON(http.StatusOK, result)
+
 }

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 
 <head>
   <meta http-equiv="content-type" charset="utf-8">
+  <title>Test Application</title>
 </head>
 
 <body>
@@ -12,21 +13,17 @@
   <a id=create href="http://localhost:8080/create?search=" target="_blank">データ作成</a><br>
 
   <form method="get" action="http://localhost:8080/analyze">
-    <p>テキスト<textarea name="text" size="30" placeholder="テキスト記入"></textarea></p>
+    <p>テキスト：<textarea name="text" size="30" placeholder="テキスト記入"></textarea></p>
     <p><input type="submit" value="analyze"></p>
   </form>
 
-  <form method="get" action="http://localhost:8080/scrape">
-    <p>URL<textarea name="url" size="30" placeholder="URL記入"></textarea></p>
-    <p><input type="submit" value="scrape"></p>
+  <form name="multiScraping" id="multiScraping">
+    <p>URL：[,]カンマ区切りで複数入力</p>
+    <p><textarea name="urls" rows="10" cols="80" placeholder="URL記入"></textarea></p>
+    <p><input type="button" value="scrape" onclick='getTitles()'></p>
   </form>
 
-<!--  <ul>-->
-<!--    {{ range .data }}-->
-<!--    <li>ID：{{.ID}}</li>-->
-<!--    <li>名前：{{.Name}}</li>-->
-<!--    {{ end }}-->
-<!--  </ul>-->
+  <ul id="titles"></ul>
 
   <script type="text/javascript">
     var exampleDefault = document.getElementById("example").href
@@ -34,6 +31,41 @@
     function inputQuery() {
       document.getElementById("example").href = exampleDefault + document.getElementById("searchTerm").value
       document.getElementById("create").href = createDefault + document.getElementById("searchTerm").value
+    }
+    function getTitles() {
+      const urls = document.forms['multiScraping'].elements['urls'].value;
+      const params = { // 渡したいパラメータをJSON形式で書く
+        urls: urls,
+      };
+      const queryParams = new URLSearchParams(params);
+      const url_string = 'http://localhost:8080/scrape?';
+      fetch(url_string + queryParams,
+        {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin':'*'
+          }
+        })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`${res.status} ${res.statusText}`);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          for(let i=0, len=data.length;i<len;i++) {
+            let title = document.createElement("li");
+            title.setAttribute("id", "title-"+i);
+            title.innerHTML = data[i];
+            document.getElementById("titles").appendChild(title);
+          }
+        })
+        .catch((reason) => {
+          console.log(reason);
+        });
     }
   </script>
 </body>

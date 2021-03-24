@@ -33,8 +33,7 @@ func main() {
 		// アクセスを許可したいアクセス元
 		AllowOrigins: []string{
 			"http://localhost",
-			"http://localhost/",
-			"*",
+			//"*",
 		},
 		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
 		AllowMethods: []string{

@@ -59,7 +59,7 @@
           for(let i=0, len=data.length;i<len;i++) {
             let title = document.createElement("li");
             title.setAttribute("id", "title-"+i);
-            title.innerHTML = data[i];
+            title.innerHTML = data[i]['Title'] + '：' + data[i]['Time'] + '秒';
             document.getElementById("titles").appendChild(title);
           }
         })

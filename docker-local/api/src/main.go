@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -159,6 +160,11 @@ func parseToNode(m *mecab.MeCab, text string) []map[string]interface{} {
 	return data
 }
 
+type Title struct {
+	Title string
+	Time string
+}
+
 func scrapeText(c *gin.Context) {
 	var urls []string
 	urls = strings.Split(c.Query("urls"), ",")
@@ -169,10 +175,11 @@ func scrapeText(c *gin.Context) {
 	wg.Add(len(urls))
 
 	//titlesを返すresult
-	var result []interface{}
+	var results []Title
 
 	//titleをfetchする関数定義
 	fetchTitle := func(url string) {
+		start := time.Now()
 		defer wg.Done()
 		// Getリクエスト
 		res, _ := http.Get(url)
@@ -195,8 +202,12 @@ func scrapeText(c *gin.Context) {
 
 		// titleを抜き出し
 		title := document.Find("title").Text()
-		result = append(result, title)
-		fmt.Println(result)
+		end := time.Now();
+		time := (end.Sub(start)).Seconds()
+		result := Title{title, strconv.FormatFloat(time, 'f', -1, 64) }
+		results= append(results, result)
+		fmt.Println(results)
+
 	}
 
 	//urlsの回数分スレッド実行
@@ -207,6 +218,6 @@ func scrapeText(c *gin.Context) {
 	//fetchTitle goroutineが終わるまで、wg.Wait()で待つ
 	wg.Wait()
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, results)
 
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { BehaviorSubject, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Subject, Subscription } from "rxjs";
 import { FormBuilder, FormsModule, FormControl } from '@angular/forms';
 import { TitleScrapingService } from '../service/title-scraping.service';
 import { TitleScrapingEntity } from '../model/title-scraping.model';
-
+import { TEXT } from '../../../../../resources/texts/features/scraping-challenge/title-scraping/text';
 
 @Component({
   selector: 'app-title-scraping',
@@ -28,6 +28,8 @@ export class TitleScrapingComponent implements OnInit, OnDestroy {
   titles: Array<TitleScrapingEntity>;
   isTitle: boolean = false;
   urls: string;
+  texts: { [key:string]: string};
+  pageReady: boolean = false;
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -36,7 +38,13 @@ export class TitleScrapingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.subscriptions.push(
+      TEXT().subscribe(res =>{
+        this.texts = res;
+      })
+    );
     this.titles = [];
+    this.pageReady = true;
   }
 
   getTitles(): void {

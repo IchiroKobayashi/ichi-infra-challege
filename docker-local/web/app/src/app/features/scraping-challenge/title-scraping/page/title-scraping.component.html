@@ -7,7 +7,8 @@
 </head>
 
 <body>
-
+<ng-container *ngIf="pageReady">
+<h1>{{ texts['title']}}</h1>
 
 <p>URL：[,]カンマ区切りで複数入力</p>
 <p><textarea name="urls" rows="10" cols="80" placeholder="URL記入" [(ngModel)]="urls"></textarea></p>
@@ -18,6 +19,7 @@
     {{title.title}}：{{title.time}} 秒
   </li>
 </ul>
+</ng-container>
 
 </body>
 

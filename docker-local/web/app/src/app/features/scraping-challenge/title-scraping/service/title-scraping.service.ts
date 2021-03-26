@@ -13,7 +13,7 @@ export class TitleScrapingService {
   }
 
   getTitles(urls: string): Observable<Array<TitleScrapingEntity>>{
-    return this.http.get<Array<object>>(
+    return this.http.get<Array<TitleScrapingEntity>>(
       ScrapingChallengeConst.API_URL + 'scrape',
       {
         params:{

@@ -1,4 +1,4 @@
 export class TitleScrapingEntity {
-  title?: string;
-  time?: string;
+  Title?: string;
+  Time?: string;
 }

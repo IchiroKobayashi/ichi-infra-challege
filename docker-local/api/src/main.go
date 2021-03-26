@@ -44,16 +44,7 @@ func main() {
 		},
 		// 許可したいHTTPリクエストヘッダ
 		AllowHeaders: []string{
-			"Access-Control-Allow-Credentials",
-			"Access-Control-Allow-Headers",
-			"Access-Control-Allow-Origin",
 			"Content-Type",
-			"Content-Length",
-			"Accept-Encoding",
-			"Authorization",
-			"Origin",
-			"Authorization",
-			"Accept",
 		},
 		// cookieなどの情報を必要とするかどうか
 		AllowCredentials: false,
@@ -202,7 +193,7 @@ func scrapeText(c *gin.Context) {
 
 		// titleを抜き出し
 		title := document.Find("title").Text()
-		end := time.Now();
+		end := time.Now()
 		time := (end.Sub(start)).Seconds()
 		result := Title{title, strconv.FormatFloat(time, 'f', -1, 64) }
 		results= append(results, result)

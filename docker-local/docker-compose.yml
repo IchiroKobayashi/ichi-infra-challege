@@ -12,7 +12,7 @@ services:
       - 80:80
     volumes:
       - ./web/env/nginx:/etc/nginx/conf.d
-      - ./web/src:/var/www/html
+#      - ./web/src:/var/www/html
     depends_on:
       - api
     logging:

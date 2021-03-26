@@ -19,3 +19,6 @@ docker-local/db/db-data/ibdata1
 docker-local/api/src/src
 docker-local/db/db-data/ibtmp1
 docker-local/.idea
+docker-local/web/app/.editorconfig
+docker-local/web/app/src/assets/.gitkeep
+docker-local/web/app/.browserslistrc

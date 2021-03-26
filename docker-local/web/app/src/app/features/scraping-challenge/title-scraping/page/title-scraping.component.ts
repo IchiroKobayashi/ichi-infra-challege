@@ -49,6 +49,7 @@ export class TitleScrapingComponent implements OnInit, OnDestroy {
 
   getTitles(): void {
     this.titles = [];
+    this.isTitle = false;
     this.subscriptions.push(
       this.service.getTitles(this.urls).subscribe(response => {
         if(response.length > 0) {

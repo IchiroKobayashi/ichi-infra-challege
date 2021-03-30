@@ -60,4 +60,11 @@ export class TitleScrapingComponent implements OnInit, OnDestroy {
     );
   }
 
+  notifyMe(): void {
+    this.service.notifyMe().subscribe(response => {
+      console.log(response);
+    })
+
+  }
+
 }

@@ -23,4 +23,10 @@ export class TitleScrapingService {
     )
   }
 
+  notifyMe(): Observable<object>{
+    return this.http.get<object>(
+      ScrapingChallengeConst.LAMBDA_ENDPOINT
+    )
+  }
+
 }

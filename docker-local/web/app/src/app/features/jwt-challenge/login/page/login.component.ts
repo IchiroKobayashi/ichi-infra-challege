@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewEncapsulation, NgModule, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, Observable, Subject, Subscription } from "rxjs";
 import { FormGroup, FormBuilder, FormsModule, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { LoginService } from '../service/login.service';
 import { UserLoginEntity } from '../model/user-login.model';
+import { NgMessageComponent } from './message/ng-message.component';
+
 
 @Component({
   selector: 'app-login',
@@ -12,6 +14,8 @@ import { UserLoginEntity } from '../model/user-login.model';
   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  @ViewChild('NgMessageComponent')
+  private ngMessageComponent:NgMessageComponent;
 
   // Constructor DI
   constructor(
@@ -26,17 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject();
   private subscriptions: Array<Subscription> = [];
   pageReady: boolean = true;
-  formGroup = new FormGroup({
-    email: new FormControl('', [
-      Validators.email, // e-mailフォーマットチェック
-      Validators.required
-      // this.duplicateEmailValidator() // 任意のバリデーション(今回は重複チェック)
-    ]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8) // 最低8文字
-    ])
-  });
+  public formGroup: FormGroup;
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -46,14 +40,26 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // this.pageReady = true;
+    this.formGroup = new FormGroup({
+      email: new FormControl('', [
+        Validators.email, // e-mailフォーマットチェック
+        Validators.required
+        // this.duplicateEmailValidator() // 任意のバリデーション(今回は重複チェック)
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8) // 最低8文字
+      ])
+    });
+    console.log(this.formGroup);
   }
 
-  public get email() {
-    return this.formGroup.get('email');
+  public get email(): FormControl {
+    return this.formGroup.get('email') as FormControl;
   }
 
-  public get password() {
-    return this.formGroup.get('password');
+  public get password(): FormControl {
+    return this.formGroup.get('password') as FormControl;
   }
 
   onSubmit(event: Event) {

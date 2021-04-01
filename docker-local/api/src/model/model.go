@@ -2,8 +2,11 @@ package model
 
 import (
 	"database/sql"
+	"encoding/hex"
 	"fmt"
+	"log"
 	"time"
+	"crypto/sha256"
 
 	"github.com/ichi-infra-challenge/docker-local/api/src/config"
 	"github.com/jinzhu/gorm"
@@ -11,10 +14,12 @@ import (
 
 // User ユーザー情報のテーブル情報
 type User struct {
-	ID        int       `json:"id" gorm:"column:id;"`
-	Name      string    `json:"name" gorm:"column:name;"`
-	CreatedAt time.Time `json:"createdAt" gorm:"column:created_at;"`
-	UpdatedAt time.Time `json:"updatedAt" gorm:"column:updated_at;"`
+	ID        string       `json:"id" gorm:"column:id;"`
+	Email     string       `json:"email" gorm:"column:email;"`
+	Password  string       `json:"password" gorm:"column:password;"`
+	Username  string       `json:"username" gorm:"column:username;"`
+	CreatedAt time.Time    `json:"createdAt" gorm:"column:created_at;"`
+	UpdatedAt time.Time    `json:"updatedAt" gorm:"column:updated_at;"`
 }
 
 // Create ユーザー情報のテーブル情報
@@ -32,7 +37,7 @@ func Create(name string) (sql.Result, error) {
 	fmt.Println(name)
 
 	sqlParams := []interface{}{name}
-	query := `INSERT INTO users (name) VALUES (?)`
+	query := `INSERT INTO users (username) VALUES (?)`
 
 	fmt.Println(query)
 	defer db.Close()
@@ -44,8 +49,14 @@ func Create(name string) (sql.Result, error) {
 
 }
 
-// FindByName だよ
-func FindByName(name string) (bool, error) {
+func getSHA256Binary(s string) []byte {
+	r := sha256.Sum256([]byte(s))
+	return r[:]
+}
+
+
+// FindUser だよ
+func FindUserByEmailPass(email string, password string) (User, error) {
 	// db, err := sql.Open("mysql", "local:local@tcp(127.0.0.1:3306)/infra-challenge")
 	db, err := sql.Open("mysql", config.MySQLConnection)
 	if err != nil {
@@ -53,25 +64,27 @@ func FindByName(name string) (bool, error) {
 	} else {
 		fmt.Println("DB接続成功")
 	}
-	fmt.Println(name)
+	passSha256b := getSHA256Binary(password)
+	passSha256Str := hex.EncodeToString(passSha256b)
+	fmt.Println(passSha256Str)
 
-	sqlParams := []interface{}{name}
-	query := "Select name FROM `users` WHERE `name` = ?"
+	sqlParams := []interface{}{ email, passSha256Str }
+	query := "Select id, username FROM users WHERE email = ? and password = ?"
 
 	fmt.Println(query)
 
 	defer db.Close()
-	err = db.QueryRow(query, sqlParams...).Scan(&name)
+	var id string
+	var username string
+	err = db.QueryRow(query, sqlParams...).Scan(&id, &username)
+	fmt.Println(id)
+	fmt.Println(username)
 	if err != nil {
-		return false, err
+		log.Fatal(err)
 	}
-	fmt.Println(name)
+	user := User{ID: id, Username: username}
 
-	if name != "" {
-		return true, err
-	}
-
-	return false, err
+	return user, err
 }
 
 // GetAll するよ

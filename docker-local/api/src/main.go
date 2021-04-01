@@ -13,7 +13,9 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	//jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	mecab "github.com/bluele/mecab-golang"
+	jwt "github.com/form3tech-oss/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -34,6 +36,7 @@ func main() {
 		// アクセスを許可したいアクセス元
 		AllowOrigins: []string{
 			"http://localhost",
+			"http://localhost:4200",
 			//"*",
 		},
 		// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
@@ -56,6 +59,7 @@ func main() {
 	r.GET("/create", createData)
 	r.GET("/analyze", morphologicalAnalyze)
 	r.GET("/scrape", scrapeText)
+	r.POST("/login", loginJwtAuth)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
@@ -211,4 +215,55 @@ func scrapeText(c *gin.Context) {
 
 	c.JSON(http.StatusOK, results)
 
+}
+
+
+func loginJwtAuth(c *gin.Context) {
+	var user model.User
+	c.BindJSON(&user)
+
+	userObj, err := model.FindUserByEmailPass(user.Email, user.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, nil)
+	}
+
+	jwt := issueJwt(userObj)
+
+	c.JSON(http.StatusOK, gin.H{
+		"jwt": jwt,
+	})
+}
+
+func issueJwt(user model.User) string {
+	// Secret Key
+	signInKey := "secret"
+
+	// headerのセット
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// claimsのセット
+	claims := token.Claims.(jwt.MapClaims)
+	claims["admin"] = true
+	claims["sub"] = user.ID
+	claims["username"] = user.Username
+	claims["iat"] = time.Now()
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// 電子署名
+	tokenString, _ := token.SignedString([]byte(signInKey))
+	return tokenString
+}
+
+//func checkJwt (jwt string) {
+//	JwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
+//		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+//			return []byte(os.Getenv("SIGNINGKEY")), nil
+//		},
+//		SigningMethod: jwt.SigningMethodHS256,
+//	})
+//}
+
+type Login struct {
+	Email string `form:"email" json:"email" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
 }

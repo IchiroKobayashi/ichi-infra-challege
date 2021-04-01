@@ -10,19 +10,20 @@
 <ng-container *ngIf="pageReady">
 <h1>JWT認証を試すアプリ</h1>
 
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit($event)">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <div>
       <div>
         Eメール：<input type="text" formControlName="email" required>
       </div>
       <div>
-        パスワード：<input type="text" formControlName="password" required>
+        パスワード：<input type="password" formControlName="password" required>
       </div>
       <div>
         <app-ng-message [formGroup]="this.formGroup"></app-ng-message>
       </div>
       <div>
-        <button type="submit">Submit</button>
+        <button type="submit">Login</button>
+<!--        <button type="submit" [disabled]="formGroup.invalid">Submit</button>-->
       </div>
     </div>
   </form>

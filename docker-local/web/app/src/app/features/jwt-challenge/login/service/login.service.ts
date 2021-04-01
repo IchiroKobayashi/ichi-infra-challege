@@ -12,13 +12,12 @@ export class LoginService {
   ) {
   }
 
-  login(urls: string): Observable<Array<UserLoginEntity>>{
-    return this.http.post<Array<UserLoginEntity>>(
+  login(email: string, password: string): Observable<UserLoginEntity>{
+    return this.http.post<UserLoginEntity>(
       JwtChallengeConst.API_URL + 'login',
       {
-        params:{
-          urls: urls
-        }
+        email: email,
+        password: password
       }
     )
   }

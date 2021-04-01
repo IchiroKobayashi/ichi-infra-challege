@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       ]),
       password: new FormControl('', [
         Validators.required,
-        Validators.minLength(8) // 最低8文字
+        Validators.minLength(6) // 最低6文字
       ])
     });
     console.log(this.formGroup);
@@ -62,10 +62,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.formGroup.get('password') as FormControl;
   }
 
-  onSubmit(event: Event) {
-    // TODO: Use EventEmitter with form value
-    console.log(event);
-    // this.service.login(event);
+  onSubmit() {
+    this.service.login(this.email.value, this.password.value).subscribe(res => {
+      console.log(res);
+    });
   }
 
   // private duplicateEmailValidator(): ValidatorFn {

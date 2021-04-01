@@ -4,9 +4,11 @@ go 1.15
 
 require (
 	github.com/PuerkitoBio/goquery v1.6.1
+	github.com/auth0/go-jwt-middleware v1.0.0
 	github.com/aws/aws-xray-sdk-go v1.3.0
 	github.com/bluele/mecab-golang v0.0.0-20180831023624-c8cfe04e87f9
 	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/form3tech-oss/jwt-go v3.2.2+incompatible
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-openapi/strfmt v0.20.0

@@ -52,6 +52,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       ])
     });
     console.log(this.formGroup);
+
+    //TODO: Hit authorization API when visiting this page
   }
 
   public get email(): FormControl {
@@ -65,6 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.service.login(this.email.value, this.password.value).subscribe(res => {
       console.log(res);
+      //TODO: save jwt into localstorage
     });
   }
 

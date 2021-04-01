@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta http-equiv="content-type" charset="utf-8">
+  <title>Test Application</title>
+</head>
+
+<body>
+<ng-container *ngIf="pageReady">
+<h1>JWT認証を試すアプリ</h1>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit($event)">
+    <div>
+      <div>
+        Eメール：<input type="text" formControlName="email" required>
+        <app-ng-message [form]="email"></app-ng-message>
+      </div>
+      <div>
+        パスワード：<input type="text" formControlName="password" required>
+        <app-ng-message [form]="password"></app-ng-message>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </div>
+  </form>
+
+</ng-container>
+
+</body>
+
+</html>

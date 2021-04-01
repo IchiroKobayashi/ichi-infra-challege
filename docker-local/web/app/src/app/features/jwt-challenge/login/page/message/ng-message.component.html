@@ -1,20 +1,19 @@
 <div *ngIf="email.invalid && (email.dirty || email.touched)">
   <span *ngIf="email.hasError('required')">
-    必須です。
+  emailは必須です。<br>
   </span>
   <span *ngIf="email.hasError('email')">
-    e-mailアドレスのフォーマットにしてください。(xxx@hogehoge.com)
+  e-mailアドレスのフォーマットにしてください。(xxx@hogehoge.com)<br>
+  </span>
+</div>
+<div *ngIf="password.invalid && (password.dirty || password.touched)">
+  <span *ngIf="password.hasError('required')">
+    パスワードは必須です。<br>
+  </span>
+  <span *ngIf="password.hasError('minlength')">
+    最低8文字です。<br>
   </span>
 <!--  <span *ngIf="userID.hasError('duplicateEmail')">-->
 <!--    入力頂いたアドレスは重複しています。-->
 <!--  </span>-->
 </div>
-<div *ngIf="password.invalid && (password.dirty || password.touched)">
-  <span *ngIf="password.hasError('required')">
-    必須です。
-  </span>
-  <span *ngIf="password.hasError('minlength')">
-    最低8文字です。
-  </span>
-</div>
-
